@@ -696,3 +696,48 @@ index f6fc205..590b29e 100644
 +   * @returns Promise<PPTImageElement> 更新后的图片元素
 +   */
 ```
+
+# 不随机背景图片的话可以这样修改
+```
++++ b/frontend/src/hooks/useAIPPT.ts
+@@ -601,7 +601,7 @@ export default () => {
+       if (item.type === 'cover') {
+         const coverTemplate = coverTemplates[Math.floor(Math.random() * coverTemplates.length)]
+         const elements = coverTemplate.elements.map(el => {
+-          if (el.type === 'image' && (el as any).imageType && imgPool.value.length) return getNewImgElement(el as PPTImageElement)
++          if (el.type === 'image' && (el as PPTImageElement).imageType && (el as PPTImageElement).imageType !== 'pageFigure' && imgPool.value.length) return getNewImgElement(el as PPTImageElement)
+           if (el.type !== 'text' && el.type !== 'shape') return el
+           if (checkTextType(el, 'title') && item.data.title) {
+             return getNewTextElement({ el: el as any, text: item.data.title, maxLine: 1 })
+@@ -676,7 +676,7 @@ export default () => {
+         const unusedGroupIds: string[] = []
+
+         const elements = contentsTemplate.elements.map(el => {
+-          if (el.type === 'image' && (el as any).imageType && imgPool.value.length) return getNewImgElement(el as PPTImageElement)
++          if (el.type === 'image' && (el as PPTImageElement).imageType && (el as PPTImageElement).imageType !== 'pageFigure' && imgPool.value.length) return getNewImgElement(el as PPTImageElement)
+           if (el.type !== 'text' && el.type !== 'shape') return el
+
+           if (checkTextType(el, 'item')) {
+@@ -703,7 +703,7 @@ export default () => {
+       else if (item.type === 'transition') {
+         transitionIndex.value = transitionIndex.value + 1
+         const elements = transitionTemplate.value!.elements.map(el => {
+-          if (el.type === 'image' && (el as any).imageType && imgPool.value.length) return getNewImgElement(el as PPTImageElement)
++          if (el.type === 'image' && (el as PPTImageElement).imageType && (el as PPTImageElement).imageType !== 'pageFigure' && imgPool.value.length) return getNewImgElement(el as PPTImageElement)
+           if (el.type !== 'text' && el.type !== 'shape') return el
+           if (checkTextType(el, 'title') && item.data.title) {
+             return getNewTextElement({ el: el as any, text: item.data.title, maxLine: 1 })
+           if (el.type !== 'text' && el.type !== 'shape') return el
+           if (checkTextType(el, 'title') && item.data.title) {
+             return getNewTextElement({ el: el as any, text: item.data.title, maxLine: 1 })
+@@ -815,7 +815,7 @@ export default () => {
+             }
+           }
+           // 背景图等
+-          if (el.type === 'image' && (el as any).imageType && imgPool.value.length) return getNewImgElement(el as PPTImageElement)
++          if (el.type === 'image' && (el as PPTImageElement).imageType && (el as PPTImageElement).imageType !== 'pageFigure' && imgPool.value.l
+ength) return getNewImgElement(el as PPTImageElement)
+
+           if (el.type === 'chart') {
+             const idx = sortedChartItemIds.findIndex(id => id === el.id)
+```
